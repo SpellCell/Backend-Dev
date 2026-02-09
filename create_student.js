@@ -3,7 +3,6 @@ import fs from "fs"
 function createStudent(name, id, classes){
 
     try {
-
          let studentsJson = [];
          let ob = {
             name, id, classes
@@ -29,3 +28,4 @@ function createStudent(name, id, classes){
 
 }
 export default createStudent
+
