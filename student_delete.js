@@ -1,5 +1,4 @@
 import fs from "fs";
-
 function deleteStudent(id){
     try{
         if(fs.existsSync("student.json")){
@@ -12,4 +11,5 @@ function deleteStudent(id){
     catch(error){
         console.log(error);
     }
+
 }
