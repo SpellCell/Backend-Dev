@@ -1,0 +1,238 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #f1f5f9;
+    color: #1e293b;
+}
+
+/* LAYOUT */
+.container {
+    display: flex;
+}
+
+/* SIDEBAR */
+/* SIDEBAR */
+.sidebar {
+    width: 240px;
+    background: linear-gradient(180deg, #0f172a, #020617);
+    color: white;
+    height: 100vh;
+    padding: 25px 20px;
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar h2 {
+    margin-bottom: 25px;
+    font-size: 22px;
+    letter-spacing: 1px;
+}
+
+/* REMOVE DEFAULT LINK STYLE */
+.sidebar a {
+    text-decoration: none !important;
+    color: white !important;
+    display: block;
+    width: 100%;
+}
+
+/* NAV */
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar li {
+    margin-bottom: 8px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+/* CLICK AREA */
+.sidebar li a {
+    padding: 12px 15px;
+    border-radius: 8px;
+}
+
+/* HOVER EFFECT */
+.sidebar li:hover {
+    background: #1e293b;
+    transform: translateX(5px);
+}
+
+/* ACTIVE */
+.sidebar li.active {
+    background: #2563eb;
+    font-weight: bold;
+}
+
+/* BOTTOM MENU */
+.bottom-menu {
+    margin-top: auto;
+}
+
+/* BOTTOM MENU */
+.bottom-menu {
+    margin-top: auto;
+}
+
+/* MAIN */
+.main {
+    margin-left: 240px;
+    padding: 30px;
+    width: 100%;
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 26px;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-top: 25px;
+}
+
+.card {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+    transition: 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+}
+
+/* CARD TEXT */
+.card h4 {
+    font-size: 14px;
+    color: #64748b;
+}
+
+.card h2 {
+    margin: 10px 0;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* COLORS */
+.green {
+    color: #16a34a;
+    font-size: 13px;
+}
+
+.red {
+    color: #dc2626;
+    font-size: 13px;
+}
+
+/* CARD ACCENT STRIP */
+.card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 100%;
+    background: linear-gradient(180deg, #2563eb, #3b82f6);
+}
+
+/* IMAGES SECTION */
+.images {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+}
+
+.img-box {
+    background: white;
+    padding: 15px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.img-box h3 {
+    margin-bottom: 10px;
+    font-size: 16px;
+}
+
+.img-box img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* ACTIVITY */
+.activity {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    margin-top: 30px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+}
+
+.activity h3 {
+    margin-bottom: 12px;
+}
+
+.activity p {
+    padding: 10px 0;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.activity p:last-child {
+    border-bottom: none;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1000px) {
+    .cards {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .images {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .sidebar {
+        display: none;
+    }
+
+    .main {
+        margin-left: 0;
+        padding: 20px;
+    }
+
+    .cards {
+        grid-template-columns: 1fr;
+    }
+}

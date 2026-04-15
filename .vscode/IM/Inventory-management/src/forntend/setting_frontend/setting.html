@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Settings</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="./setting.css">
+</head>
+
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+<div class="logo"> InvenTrack</div>
+
+<div class="menu">
+<a href="#">Dashboard</a>
+<a href="#">Products</a>
+<a href="#">Inventory</a>
+<a href="#">Sales</a>
+<a href="#">Purchases</a>
+<a href="#">Users</a>
+<a href="#" class="active">Settings</a>
+
+<br><br><br>
+
+<a href="#">Logout</a>
+</div>
+</div>
+
+<!-- Topbar -->
+<div class="topbar">
+
+<div class="search-box">
+<i class="fa fa-search"></i>
+<input type="text" placeholder="Search...">
+</div>
+
+<div class="top-icons">
+<i class="fa-regular fa-bell"></i>
+
+<div class="profile">
+<div class="avatar">JD</div>
+<div class="profile-info">
+<span>John Doe</span>
+<span>Admin</span>
+</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- Main -->
+<div class="main">
+
+<h2>Settings</h2>
+<p>Manage your account settings and preferences</p>
+
+<div class="grid">
+
+<!-- Profile -->
+<div class="card">
+<h3>Profile Settings</h3>
+
+<input id="name" value="John Doe">
+<input id="email" value="john@example.com">
+<input id="phone" value="+91 9999999999">
+
+<button class="btn" onclick="saveProfile()">Save Profile</button>
+</div>
+
+<!-- Security -->
+<div class="card">
+<h3>Security Settings</h3>
+
+<input type="password" id="currentPass" placeholder="Current Password">
+<input type="password" id="newPass" placeholder="New Password">
+<input type="password" id="confirmPass" placeholder="Confirm Password">
+
+<button class="btn" onclick="updatePassword()">Update Password</button>
+</div>
+
+<!-- Notifications -->
+<div class="card">
+<h3>Notification Settings</h3>
+
+<div class="row">
+<span>Email Notifications</span>
+<label class="switch">
+<input type="checkbox" id="emailNotify" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+<div class="row">
+<span>Push Notifications</span>
+<label class="switch">
+<input type="checkbox" id="pushNotify">
+<span class="slider"></span>
+</label>
+</div>
+
+<div class="row">
+<span>Low Stock Alerts</span>
+<label class="switch">
+<input type="checkbox" id="stockAlert" checked>
+<span class="slider"></span>
+</label>
+</div>
+
+<button class="btn" onclick="saveNotifications()">Save Preferences</button>
+</div>
+
+<!-- General -->
+<div class="card">
+<h3>General Settings</h3>
+
+<select id="language">
+<option>English</option>
+<option>Hindi</option>
+</select>
+
+<select id="currency">
+<option>USD</option>
+<option>INR</option>
+</select>
+
+<div class="row">
+<span>Dark Mode</span>
+<label class="switch">
+<input type="checkbox" id="darkMode">
+<span class="slider"></span>
+</label>
+</div>
+
+<button class="btn" onclick="saveGeneral()">Save Settings</button>
+</div>
+
+</div>
+
+</div>
+
+<script src="./setting.js"></script>
+</body>
+</html>

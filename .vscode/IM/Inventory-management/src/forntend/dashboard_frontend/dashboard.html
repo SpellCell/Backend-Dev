@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+
+<link rel="stylesheet" href="./dashboard.css">
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- Sidebar -->
+<ul>
+    <li class="active"><a href="dashboard.html">Dashboard</a></li>
+    <li><a href="../product_frontend/product.html">Products</a></li>
+    <li><a href="../sales_frontend/sales.html">Sales</a></li>
+    <li><a href="../purchase_frontend/purchase.html">Purchases</a></li>
+    <li><a href="../user_frontend/user.html">Users</a></li>
+</ul>
+
+<ul class="bottom-menu">
+    <li><a href="../setting_frontend/setting.html">Settings</a></li>
+    <li><a href="#" onclick="logout()">Logout</a></li>
+</ul>
+
+    <!-- Main -->
+    <div class="main">
+
+        <!-- Header -->
+        <div class="header">
+            <h1>Dashboard</h1>
+        </div>
+
+        <p>Welcome back, <span id="username">User</span> 👋</p>
+
+        <!-- Cards -->
+        <div class="cards">
+
+            <div class="card">
+                <h4>Total Products</h4>
+                <h2 id="totalProducts">0</h2>
+                <p class="green">Live Data</p>
+            </div>
+
+            <div class="card">
+                <h4>Total Sales</h4>
+                <h2 id="totalSales">0</h2>
+                <p class="green">Live Data</p>
+            </div>
+
+            <div class="card">
+                <h4>Low Stock</h4>
+                <h2 id="lowStock">0</h2>
+                <p class="red">Live Data</p>
+            </div>
+
+            <div class="card">
+                <h4>Revenue</h4>
+                <h2 id="revenue">₹0</h2>
+                <p class="green">Live Data</p>
+            </div>
+
+        </div>
+
+        <!-- Images Section -->
+        <div class="images">
+
+            <div class="img-box">
+                <h3>Sales Overview</h3>
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71">
+            </div>
+
+            <div class="img-box">
+                <h3>Revenue Insights</h3>
+                <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f">
+            </div>
+
+        </div>
+
+        <!-- Activity -->
+        <div class="activity">
+            <h3>Recent Activity</h3>
+
+            <p>📦 Product data loaded</p>
+            <p>💰 Sales updated</p>
+            <p>⚠️ Low stock calculated</p>
+            <p>📊 Revenue calculated</p>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="./dashboard.js"></script>
+
+</body>
+</html>
