@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
-  "type":"module",
+  "type": "module",
   "scripts": {
     "start": "nodemon server.js"
   },
@@ -19,6 +19,7 @@
     "joi": "^18.1.2",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.5.0",
+    "nodemailer": "^8.0.5",
     "nodemon": "^3.1.14"
   }
 }

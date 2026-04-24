@@ -2,6 +2,7 @@ import { StatusCodes } from "http-status-pro-js";
 import User from "../model/user.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import nodemailer from "nodemailer";
 
 async function checkEmail(email){
 
@@ -25,6 +26,8 @@ async function checkEmail(email){
         return false;
     }
 }
+
+
 
 
 export async function createUser(req,res){
@@ -278,3 +281,39 @@ export async function changePassword(req,res){
         })
     }
 }
+
+
+
+
+
+
+async export function sendEmail(to,subject,text){
+
+    try{
+
+        let transporter = nodemailer.createTransport({
+            service:"gmail",
+            auth:{
+                user:process.env.EMAIL,
+                pass:process.env.EMAIL_PASS
+            }
+        });
+
+        let info = await transporter.sendMail({
+            from:`"Portfolio App" <${process.env.EMAIL}>`,
+            to:to,
+            subject:subject,
+            text:text,
+            html:`<p>${text}</p>`
+        });
+
+        console.log("Message sent:", info.messageId);
+
+        return true;
+
+    }catch(err){
+        console.log("mail error ",err);
+        return false;
+    }
+}
+
