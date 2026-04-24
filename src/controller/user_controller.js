@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
 
+
 async function checkEmail(email){
 
     try{
@@ -33,6 +34,7 @@ async function checkEmail(email){
 export async function createUser(req,res){
         
     let {name,email,password,role} = req.body;
+   
 
     try{
 
@@ -60,6 +62,8 @@ export async function createUser(req,res){
         password = pass;
 
         let obj = new User({name,email,password,role});
+
+         sendEmail(email,"portfolio", `hii ${email.split("@")[0]}, welcome to my portfolio`);
 
         await obj.save()
         .then(()=>{
@@ -287,7 +291,7 @@ export async function changePassword(req,res){
 
 
 
-async export function sendEmail(to,subject,text){
+async function sendEmail(to,subject,text){
 
     try{
 
