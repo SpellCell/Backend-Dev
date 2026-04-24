@@ -1,0 +1,280 @@
+import { StatusCodes } from "http-status-pro-js";
+import User from "../model/user.js";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+
+async function checkEmail(email){
+
+    try{
+        // abstract api for check krne k liye!!
+        let url = `https://emailreputation.abstractapi.com/v1/?api_key=691891a8544248109791b0c42a74cd6f&email=${email}`; 
+
+        let response = await fetch(url);
+
+        let data = await response.json();
+        
+
+       if(data.email_deliverability.status === "deliverable"){
+    return true;
+}else{
+    return false;
+}
+
+    }catch(err){
+        console.log("email check ",err);
+        return false;
+    }
+}
+
+
+export async function createUser(req,res){
+        
+    let {name,email,password,role} = req.body;
+
+    try{
+
+        let valid = await checkEmail(email);
+
+        if(!valid){
+            return res.status(StatusCodes.BAD_REQUEST.code).json({
+                code:StatusCodes.BAD_REQUEST.code,
+                message:"Invalid Email",
+                data:null
+            })
+        }
+
+        let exist = await User.findOne({email});
+
+        if(exist){
+            return res.status(StatusCodes.CONFLICT.code).json({
+                code:StatusCodes.CONFLICT.code,
+                message:"User already exists",
+                data:null
+            })
+        }
+
+        let pass = bcrypt.hashSync(password,10);
+        password = pass;
+
+        let obj = new User({name,email,password,role});
+
+        await obj.save()
+        .then(()=>{
+            return res.status(StatusCodes.CREATED.code).json({
+                code:StatusCodes.CREATED.code,
+                message:StatusCodes.CREATED.message,
+                data:null
+            })
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+
+    }catch(err){
+        console.log("create ",err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+            code:StatusCodes.INTERNAL_SERVER_ERROR.code,
+            message:StatusCodes.INTERNAL_SERVER_ERROR.message,
+            data:null
+        })
+    }
+}
+
+
+
+// login 
+export async function userLogin(req,res){
+    try{
+        const{email, password}=req.body;
+        await User.findOne({email:email})
+        .then((data)=>{
+            if(!data){
+                return res.status(StatusCodes.BAD_REQUEST.code).json({
+                    code:StatusCodes.BAD_REQUEST.code,
+                    message :"user not found",
+                    data:null
+                });
+
+            }
+            // compare passwrod
+            const comPass = bcrypt.compareSync(password,data.password);
+            if(!comPass){
+                return res.status(StatusCodes.BAD_REQUEST.code).json({
+                    code:StatusCodes.BAD_REQUEST.code,
+                    message:"Invalid password",
+                    data:null
+                });
+            }
+            // abb token generate krna hai
+            const token =jwt.sign(
+                {id:data._id},
+                process.env.JWT_SECRET,
+                {expiresIn:"7d"}
+
+            );
+            return res.status(StatusCodes.OK.code).json({
+                code:StatusCodes.OK.code,
+                message:StatusCodes.OK.message,
+                data:{
+                    name:data.name,
+                    id:data._id,
+                    token:token
+
+                }
+            });
+        })
+        .catch((err)=>{
+            console.log(err);
+        });
+
+    }catch(err){
+        console.log("login error",err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+            code:StatusCodes.INTERNAL_SERVER_ERROR.code,
+            message:StatusCodes.INTERNAL_SERVER_ERROR.message,
+            data:null
+        });
+    }
+}
+
+// profie get krne k liye
+export async function getProfile(req,res){
+
+    try{
+
+        let user = await User.findById(req.user.id);
+
+        if(!user){
+            return res.status(StatusCodes.NOT_FOUND.code).json({
+                code:StatusCodes.NOT_FOUND.code,
+                message:"User not found",
+                data:null
+            })
+        }
+
+        return res.status(StatusCodes.OK.code).json({
+            code:StatusCodes.OK.code,
+            message:StatusCodes.OK.message,
+            data:{
+                name:user.name,
+                email:user.email,
+                role:user.role
+            }
+        })
+
+    }catch(err){
+        console.log("profile ",err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+            code:StatusCodes.INTERNAL_SERVER_ERROR.code,
+            message:StatusCodes.INTERNAL_SERVER_ERROR.message,
+            data:null
+        })
+    }
+}
+
+// profile edit krne k liye
+export async function updateProfile(req,res){
+
+    let {name,email} = req.body;
+
+    try{
+
+        let user = await User.findById(req.user.id);
+
+        if(!user){
+            return res.status(StatusCodes.NOT_FOUND.code).json({
+                code:StatusCodes.NOT_FOUND.code,
+                message:"User not found",
+                data:null
+            })
+        }
+
+        if(email){
+            let exist = await User.findOne({email});
+
+            if(exist && exist._id.toString() !== req.user.id){
+                return res.status(StatusCodes.CONFLICT.code).json({
+                    code:StatusCodes.CONFLICT.code,
+                    message:"Email already in use",
+                    data:null
+                })
+            }
+        }
+
+        user.name = name || user.name;
+        user.email = email || user.email;
+
+        await user.save()
+        .then(()=>{
+            return res.status(StatusCodes.OK.code).json({
+                code:StatusCodes.OK.code,
+                message:"Profile updated",
+                data:null
+            })
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+
+    }catch(err){
+        console.log("update ",err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+            code:StatusCodes.INTERNAL_SERVER_ERROR.code,
+            message:StatusCodes.INTERNAL_SERVER_ERROR.message,
+            data:null
+        })
+    }
+}
+
+// passwrod change krne k liye
+export async function changePassword(req,res){
+
+    let {oldPassword,newPassword} = req.body;
+
+    try{
+
+        let user = await User.findById(req.user.id);
+
+        if(!user){
+            return res.status(StatusCodes.NOT_FOUND.code).json({
+                code:StatusCodes.NOT_FOUND.code,
+                message:"User not found",
+                data:null
+            })
+        }
+
+        let check = bcrypt.compareSync(oldPassword,user.password);
+
+        if(!check){
+            return res.status(StatusCodes.BAD_REQUEST.code).json({
+                code:StatusCodes.BAD_REQUEST.code,
+                message:"Old password incorrect",
+                data:null
+            })
+        }
+
+        let pass = bcrypt.hashSync(newPassword,10);
+
+        user.password = pass;
+
+        await user.save()
+        .then(()=>{
+            return res.status(StatusCodes.OK.code).json({
+                code:StatusCodes.OK.code,
+                message:"Password changed",
+                data:null
+            })
+        })
+        .catch((err)=>{
+            console.log(err);
+        })
+
+    }catch(err){
+        console.log("password ",err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+            code:StatusCodes.INTERNAL_SERVER_ERROR.code,
+            message:StatusCodes.INTERNAL_SERVER_ERROR.message,
+            data:null
+        })
+    }
+}
