@@ -63,7 +63,7 @@ export async function createUser(req,res){
 
         let obj = new User({name,email,password,role});
 
-         sendEmail(email,"portfolio", `hii ${email.split("@")[0]}, welcome to my portfolio`);
+         sendEmail(email,"portfolio", `hii ${email.split("@")[0]}, welcome to this incredible journey of this portfolio system`);
 
         await obj.save()
         .then(()=>{
