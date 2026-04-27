@@ -29,6 +29,40 @@ async function checkEmail(email){
 }
 
 
+ // email send karne k liye
+ 
+async function sendEmail(to,subject,text){
+
+    try{
+
+        let transporter = nodemailer.createTransport({
+            service:"gmail",
+            auth:{
+                user:process.env.EMAIL,
+                pass:process.env.EMAIL_PASS
+            }
+        });
+
+        let info = await transporter.sendMail({
+            from:`"Portfolio App" <${process.env.EMAIL}>`,
+            to:to,
+            subject:subject,
+            text:text,
+            html:`<p>${text}</p>`
+        });
+
+        console.log("Message sent:", info.messageId);
+
+        return true;
+
+    }catch(err){
+        console.log("mail error ",err);
+        return false;
+    }
+}
+
+
+
 
 
 export async function createUser(req,res){
@@ -287,37 +321,107 @@ export async function changePassword(req,res){
 }
 
 
+// forgot password
+export async function forgotPassword(req,res){
 
-
-
-
-async function sendEmail(to,subject,text){
+    let {email} = req.body;
 
     try{
 
-        let transporter = nodemailer.createTransport({
-            service:"gmail",
-            auth:{
-                user:process.env.EMAIL,
-                pass:process.env.EMAIL_PASS
-            }
-        });
+        let user = await User.findOne({email});
 
-        let info = await transporter.sendMail({
-            from:`"Portfolio App" <${process.env.EMAIL}>`,
-            to:to,
-            subject:subject,
-            text:text,
-            html:`<p>${text}</p>`
-        });
+        if(!user){
+            return res.status(StatusCodes.NOT_FOUND.code).json({
+                code:StatusCodes.NOT_FOUND.code,
+                message:"User not found",
+                data:null
+            })
+        }
 
-        console.log("Message sent:", info.messageId);
+        let otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-        return true;
+        let expiry = new Date(Date.now() + 5*60*1000); // 5 min
+
+        user.otp = otp;
+        user.otp_expiry = expiry;
+
+        await user.save();
+
+        await sendEmail(
+            email,
+            "==== OPT VERIFICATION SYSTEM ====",
+            `Your OTP for the PORTFOLIO is ${otp}`
+        );
+
+        return res.status(StatusCodes.OK.code).json({
+            code:StatusCodes.OK.code,
+            message:"OTP sent",
+            data:null
+        })
 
     }catch(err){
-        console.log("mail error ",err);
-        return false;
+        console.log("forgot ",err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+            code:StatusCodes.INTERNAL_SERVER_ERROR.code,
+            message:StatusCodes.INTERNAL_SERVER_ERROR.message,
+            data:null
+        })
+    }
+}
+
+export async function verifyOtpAndReset(req,res){
+
+    let {email,otp,newPassword} = req.body;
+
+    try{
+
+        let user = await User.findOne({email});
+
+        if(!user){
+            return res.status(StatusCodes.NOT_FOUND.code).json({
+                code:StatusCodes.NOT_FOUND.code,
+                message:"User not found",
+                data:null
+            })
+        }
+
+        if(user.otp !== otp){
+            return res.status(StatusCodes.BAD_REQUEST.code).json({
+                code:StatusCodes.BAD_REQUEST.code,
+                message:"Invalid OTP",
+                data:null
+            })
+        }
+
+        if(new Date() > user.otp_expiry){
+            return res.status(StatusCodes.BAD_REQUEST.code).json({
+                code:StatusCodes.BAD_REQUEST.code,
+                message:"OTP expired",
+                data:null
+            })
+        }
+
+        let pass = bcrypt.hashSync(newPassword,10);
+
+        user.password = pass;
+        user.otp = null;
+        user.otp_expiry = null;
+
+        await user.save();
+
+        return res.status(StatusCodes.OK.code).json({
+            code:StatusCodes.OK.code,
+            message:"Password reset successful",
+            data:null
+        })
+
+    }catch(err){
+        console.log("otp reset ",err);
+        return res.status(StatusCodes.INTERNAL_SERVER_ERROR.code).json({
+            code:StatusCodes.INTERNAL_SERVER_ERROR.code,
+            message:StatusCodes.INTERNAL_SERVER_ERROR.message,
+            data:null
+        })
     }
 }
 
