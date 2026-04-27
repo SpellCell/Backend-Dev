@@ -165,7 +165,7 @@ export async function getProfile(req,res){
             data:{
                 name:user.name,
                 email:user.email,
-                role:user.role
+                
             }
         })
 
